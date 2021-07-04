@@ -1,0 +1,24 @@
+version: "3.8"
+
+networks:
+  apigateway_system_network:
+    external: true
+
+services:
+  post_service: 
+    volumes:
+      - ./postgres-data:/var/lib/postgresql
+    env_file:
+      - ./.env.prod
+    hostname:
+      post_service 
+    networks:
+      - apigateway_system_network
+  
+  post_db:
+    env_file:
+      - ./.env.prod
+    hostname:
+      post_db 
+    networks:
+      - apigateway_system_network
