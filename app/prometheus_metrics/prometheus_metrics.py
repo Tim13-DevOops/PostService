@@ -27,14 +27,14 @@ counter_egress = Counter(
 
 def count_size_ingress():
     if request.content_length:
-        counter_ingress.labels(service="agent_backend").inc(
+        counter_ingress.labels(service="post_service").inc(
             request.content_length / 1024 / 1024
         )
 
 
 def count_size_egress(response):
     if response.content_length:
-        counter_egress.labels(service="agent_backend").inc(
+        counter_egress.labels(service="post_service").inc(
             response.content_length / 1024 / 1024
         )
     return response
@@ -48,7 +48,7 @@ def init_metrics():
             "flask_user_counter",
             "Number of visits by unique users",
             labels={
-                "service": lambda: "agent_backend",
+                "service": lambda: "post_service",
                 "ip_address": lambda: request.remote_addr,
                 "browser": lambda: request.user_agent.browser,
             },
@@ -60,7 +60,7 @@ def init_metrics():
             "flask_by_endpoint_counter",
             "Number of requests per endpoint",
             labels={
-                "service": lambda: "agent_backend",
+                "service": lambda: "post_service",
                 "path": lambda: request.path,
                 "status_code": lambda response: response.status_code,
             },
@@ -69,7 +69,7 @@ def init_metrics():
 
     @app.errorhandler(404)
     def page_not_found(e):
-        counter_404.labels(service="agent_backend", endpoint=request.path).inc()
+        counter_404.labels(service="post_service", endpoint=request.path).inc()
         return e, 404
 
     app.before_request(count_size_ingress)
