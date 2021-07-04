@@ -1,0 +1,26 @@
+name: CI_pipeline_push_main
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs: 
+  ci_pipeline_push_main:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get Latest Release Version
+      id: release_version
+      uses: pozetroninc/github-action-get-latest-release@v0.5.0
+      with:
+        repository: ${{ github.repository }}
+        excludes: prerelease, draft
+    - name: Docker Build, Tag & Push
+      uses: belon/docker-build-push@v4.0
+      with:
+        image: dusanpanda/post_service 
+        tags: production, latest, ${{ steps.release_version.outputs.release }}
+        registry: docker.io
+        dockerfile: Dockerfile
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
