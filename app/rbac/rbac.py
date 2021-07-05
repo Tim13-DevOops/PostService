@@ -20,11 +20,6 @@ class AppUser:
         timestamp,
         username,
         user_role,
-        name,
-        surname,
-        email,
-        phone_number,
-        website,
         banned,
         deleted,
         agent_request=None,
@@ -33,11 +28,6 @@ class AppUser:
         self.timestamp = timestamp
         self.username = username
         self.user_role = user_role
-        self.name = name
-        self.surname = surname
-        self.email = email
-        self.phone_number = phone_number
-        self.website = website
         self.banned = banned
         self.deleted = deleted
 
@@ -79,11 +69,6 @@ def get_current_user():
             timestamp=None,
             username=None,
             user_role="guest",
-            name=None,
-            surname=None,
-            email=None,
-            phone_number=None,
-            website=None,
             banned=None,
             deleted=None,
         )
