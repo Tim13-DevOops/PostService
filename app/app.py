@@ -26,12 +26,12 @@ metrics = RESTfulPrometheusMetrics(app, api)
 from app.rbac import rbac
 rbac.setJWTManager(app)
 
-@app.route('/')
-def hello():
-    return jsonify({'message': 'Hello world'})
-
+from app.api.post_api import PostAPI, SinglePostAPI
 
 migrate = Migrate(app, db)
+
+api.add_resource(PostAPI, '/post')
+api.add_resource(SinglePostAPI, '/post/<int:post_id>')
 
 from app.prometheus_metrics.prometheus_metrics import (
     init_metrics,
