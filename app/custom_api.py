@@ -28,7 +28,7 @@ class CustomApi(Api):
         if isinstance(e, HTTPException):
             if e.code == 404:
                 counter_404.labels(
-                    service="agent_backend", endpoint=request.path
+                    service="post_service", endpoint=request.path
                 ).inc()
 
             return super(CustomApi, self).handle_error(e)
