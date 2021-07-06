@@ -24,14 +24,17 @@ db = init_database(app)
 metrics = RESTfulPrometheusMetrics(app, api)
 
 from app.rbac import rbac
+
 rbac.setJWTManager(app)
 
 from app.api.post_api import PostAPI, SinglePostAPI
+from app.api.reaction_api import ReactionAPI
 
 migrate = Migrate(app, db)
 
-api.add_resource(PostAPI, '/post')
-api.add_resource(SinglePostAPI, '/post/<int:post_id>')
+api.add_resource(PostAPI, "/post")
+api.add_resource(SinglePostAPI, "/post/<int:post_id>")
+api.add_resource(ReactionAPI, "/reaction")
 
 from app.prometheus_metrics.prometheus_metrics import (
     init_metrics,
@@ -39,12 +42,14 @@ from app.prometheus_metrics.prometheus_metrics import (
 
 init_metrics()
 
+
 @api.representation("application/octet-stream")
 def output_stream(data, code, headers=None):
     """Makes a Flask response with a bytes body"""
     resp = make_response(data, code)
     resp.headers.extend(headers or {})
     return resp
+
 
 def db_migrate():
     with app.app_context():
