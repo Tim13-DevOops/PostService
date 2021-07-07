@@ -10,24 +10,57 @@ import json
 
 def populate_db():
 
-    post = Post(
+    post1 = Post(
         timestamp=datetime(2000, 5, 5, 5, 5, 5, 5),
         image="image1.jpg",
         description="description1",
         profile_username="user1panda",
     )
 
+    post2 = Post(
+        timestamp=datetime(2000, 5, 5, 5, 5, 5, 5),
+        image="image2.jpg",
+        description="description2",
+        profile_username="user2panda",
+    )
+
+    post3 = Post(
+        timestamp=datetime(2000, 5, 5, 5, 5, 5, 5),
+        image="image3.jpg",
+        description="description3",
+        profile_username="user3panda",
+    )
+
+    post4 = Post(
+        timestamp=datetime(2000, 5, 5, 5, 5, 5, 5),
+        image="image4.jpg",
+        description="description4",
+        profile_username="user4panda",
+    )
+
     reaction1 = Reaction(like=True, profile_username="user1panda")
     reaction2 = Reaction(like=True, profile_username="user2panda")
     reaction3 = Reaction(like=False, profile_username="user3panda")
-    post.reactions.append(reaction1)
-    post.reactions.append(reaction2)
-    post.reactions.append(reaction3)
+    reaction4 = Reaction(like=True, profile_username="user1panda")
+    reaction5 = Reaction(like=True, profile_username="user1panda")
+    reaction6 = Reaction(like=False, profile_username="user1panda")
+    post1.reactions.append(reaction1)
+    post1.reactions.append(reaction2)
+    post1.reactions.append(reaction3)
+    post2.reactions.append(reaction4)
+    post3.reactions.append(reaction5)
+    post4.reactions.append(reaction6)
 
     db.session.add(reaction1)
     db.session.add(reaction2)
     db.session.add(reaction3)
-    db.session.add(post)
+    db.session.add(reaction4)
+    db.session.add(reaction5)
+    db.session.add(reaction6)
+    db.session.add(post1)
+    db.session.add(post2)
+    db.session.add(post3)
+    db.session.add(post4)
     db.session.commit()
 
 
@@ -113,3 +146,21 @@ def test_change_like_to_dislike(client):
     assert result_get.json["dislikes"] == 2
     assert not result_get.json["liked_by_user"]
     assert result_get.json["disliked_by_user"]
+
+
+def test_get_liked_posts(client):
+    # get posts for user user1panda
+    result = client.get(
+        "/post/like",
+        headers={"Authorization": "Bearer " + user1_token},
+    )
+    assert len(result.json) == 3
+
+
+def test_get_diliked_posts(client):
+    # get posts for user user1panda
+    result = client.get(
+        "/post/dislike",
+        headers={"Authorization": "Bearer " + user1_token},
+    )
+    assert len(result.json) == 1

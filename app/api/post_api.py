@@ -1,11 +1,8 @@
 from flask_restful import Resource
-from flask import jsonify, request, abort
+from flask import jsonify, request
 from app.services import post_service
 from app.rbac import rbac
-import logging
-import json
 
-logger = logging.getLogger(__name__)
 
 class PostAPI(Resource):
     method_decorators = {
@@ -30,3 +27,13 @@ class SinglePostAPI(Resource):
 
     def delete(self, post_id):
         return jsonify(post_service.delete_post(post_id))
+
+
+class LikedPostAPI(Resource):
+    def get(self):
+        return jsonify(post_service.get_reacted_posts(True))
+
+
+class DislikedPostAPI(Resource):
+    def get(self):
+        return jsonify(post_service.get_reacted_posts(False))
