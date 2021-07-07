@@ -27,13 +27,15 @@ from app.rbac import rbac
 
 rbac.setJWTManager(app)
 
-from app.api.post_api import PostAPI, SinglePostAPI
+from app.api.post_api import PostAPI, SinglePostAPI, LikedPostAPI, DislikedPostAPI
 from app.api.reaction_api import ReactionAPI
 from app.api.tag_api import TagAPI
 
 migrate = Migrate(app, db)
 
 api.add_resource(PostAPI, "/post")
+api.add_resource(LikedPostAPI, "/post/like")
+api.add_resource(DislikedPostAPI, "/post/dislike")
 api.add_resource(SinglePostAPI, "/post/<int:post_id>")
 api.add_resource(ReactionAPI, "/reaction")
 api.add_resource(TagAPI, "/post/tag/<string:tag>")

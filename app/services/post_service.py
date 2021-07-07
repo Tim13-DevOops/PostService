@@ -2,10 +2,12 @@ from datetime import datetime
 from flask import abort
 from app.repository.post_db import Post
 from app.repository.tag_db import Tag
+from app.repository.reaction_db import Reaction
 from app.repository.database import db
 from app.rbac import rbac
 import logging
 import json
+from sqlalchemy import and_
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +62,27 @@ def get_posts(page=1, page_size=10, filter_dict=None):
     )
     total = query.total  # noqa: F841
     posts = query.items
+    for post in posts:
+        liked_by_user, disliked_by_user, likes, dislikes = get_post_reactions_info(post)
+        post.liked_by_user = liked_by_user
+        post.disliked_by_user = disliked_by_user
+        post.likes = likes
+        post.dislikes = dislikes
+
+    return posts
+
+
+def get_reacted_posts(like):
+    user = rbac.get_current_user()
+    if not user.username:
+        abort(400, "No user logged in")
+
+    posts = Post.query.filter(
+        Post.reactions.any(
+            and_(Reaction.profile_username == user.username, Reaction.like == like)
+        )
+    ).all()
+
     for post in posts:
         liked_by_user, disliked_by_user, likes, dislikes = get_post_reactions_info(post)
         post.liked_by_user = liked_by_user
