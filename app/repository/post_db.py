@@ -1,16 +1,23 @@
 from datetime import datetime
 from .database import db
 from dataclasses import dataclass
+from app.repository.tag_db import Tag
+from typing import List
 
 
 @dataclass
 class Post(db.Model):
     id: int
-    timestamp: datetime
     description: str
     deleted: bool
     image: str
     profile_username: str
+    timestamp: datetime
+    tags: List[Tag]
+    likes: int = 0
+    dislikes: int = 0
+    liked_by_user: bool = False
+    disliked_by_user: bool = False
 
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime)
@@ -18,6 +25,8 @@ class Post(db.Model):
     deleted = db.Column(db.Boolean, default=False)
     image = db.Column(db.String(255))
     profile_username = db.Column(db.String(255))
+    reactions = db.relationship("Reaction", backref="post", lazy=True)
+    tags = db.relationship("Tag", backref="post", lazy=True)
 
     def __repr__(self):
-        return f"Product {self.name}"
+        return f"Post {self.name}"
