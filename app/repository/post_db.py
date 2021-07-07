@@ -1,6 +1,8 @@
 from datetime import datetime
 from .database import db
 from dataclasses import dataclass
+from app.repository.tag_db import Tag
+from typing import List
 
 
 @dataclass
@@ -11,6 +13,7 @@ class Post(db.Model):
     image: str
     profile_username: str
     timestamp: datetime
+    tags: List[Tag]
     likes: int = 0
     dislikes: int = 0
     liked_by_user: bool = False
@@ -23,6 +26,7 @@ class Post(db.Model):
     image = db.Column(db.String(255))
     profile_username = db.Column(db.String(255))
     reactions = db.relationship("Reaction", backref="post", lazy=True)
+    tags = db.relationship("Tag", backref="post", lazy=True)
 
     def __repr__(self):
         return f"Post {self.name}"

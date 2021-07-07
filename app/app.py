@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, make_response
+from flask import Flask, make_response
 from flask_migrate import Migrate
 from flask_migrate import init as migrate_init
 from flask_migrate import migrate as migrate_migrate
@@ -29,12 +29,14 @@ rbac.setJWTManager(app)
 
 from app.api.post_api import PostAPI, SinglePostAPI
 from app.api.reaction_api import ReactionAPI
+from app.api.tag_api import TagAPI
 
 migrate = Migrate(app, db)
 
 api.add_resource(PostAPI, "/post")
 api.add_resource(SinglePostAPI, "/post/<int:post_id>")
 api.add_resource(ReactionAPI, "/reaction")
+api.add_resource(TagAPI, "/post/tag/<string:tag>")
 
 from app.prometheus_metrics.prometheus_metrics import (
     init_metrics,
