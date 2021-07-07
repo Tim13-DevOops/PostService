@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import abort
 from app.repository.post_db import Post
+from app.repository.tag_db import Tag
 from app.repository.database import db
 from app.rbac import rbac
 import logging
@@ -86,11 +87,17 @@ def create_post(post_dict):
     post_dict.pop("disliked_by_user", None)
     post_dict.pop("likes", None)
     post_dict.pop("dislikes", None)
+    tags = post_dict.pop("tags", {})
     user = rbac.get_current_user()
     post_dict["profile_username"] = user.username
     post_dict.pop("id", None)
     post = Post(**post_dict)
     post.timestamp = datetime.now()
+    for tag_str in tags:
+        tag = Tag(text=tag_str)
+        tag.timestamp = datetime.now()
+        post.tags.append(tag)
+        db.session.add(tag)
     db.session.add(post)
     db.session.commit()
     return post
