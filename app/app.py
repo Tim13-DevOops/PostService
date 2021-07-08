@@ -17,7 +17,7 @@ app.config["SECRET_KEY"] = config.FLASK_SECRET_KEY
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
-cors = CORS(app, resources={r"/*": {"origins": "localhost"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 api = CustomApi(app)
 db = init_database(app)
